@@ -59,6 +59,6 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
 )
-add_executable(setpoints_pub_node src/setpoints_pub_iris.cpp)
+add_executable(setpoints_pub_node src/setpoints_mkII.cpp)
 add_dependencies(setpoints_pub_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(setpoints_pub_node ${catkin_LIBRARIES})
