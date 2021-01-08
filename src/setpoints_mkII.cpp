@@ -63,7 +63,7 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "pub_setpoints");
   ros::NodeHandle nh_;
   std::size_t setpoints_sent_;
-  ros::Publisher pub_thrusters_ = nh_.advertise<cola2_msgs::Setpoints>("/controller/thruster_setpoints", 1000);
+  ros::Publisher pub_thrusters_ = nh_.advertise<cola2_msgs::Setpoints>("/iris/controller/thruster_setpoints", 1000);
   ros::Rate loop_rate(10);
   std::vector<double> setpoints = {0,0,0,0,0,0,0,0};
 

@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 
   ros::Publisher pub_thrusters_;
   // Create publisher
-  pub_thrusters_ = nh_.advertise<cola2_msgs::Setpoints>("iris/controller/thruster_setpoints", 1000);
+  pub_thrusters_ = nh_.advertise<cola2_msgs::Setpoints>("/iris/controller/thruster_setpoints", 1000);
 
 
  
