@@ -10,37 +10,43 @@
 std::map<int, std::vector<double>> thrusters
 {
   {32, {0,0,0,0,0,0,0,0}},  //space bar -> COMPLETE STOP
-  //-> HEAVE
-  {87, {1,1,1,1,0,0,0,0}}, //W          
-  {119, {1,1,1,1,0,0,0,0}}, //w
-  {88, {-1,-1,-1,-1,0,0,0,0}}, //X
-  {120, {-1,-1,-1,-1,0,0,0,0}}, //x
-  //-> SWAY 
-  {68, {0,0,0,0,0,0,1,-1}}, //D          
-  {100, {0,0,0,0,0,0,1,-1}}, //d
-  {65, {0,0,0,0,0,0,-1,1}}, //A
-  {97, {0,0,0,0,0,0,-1,1}}, //a
   //-> SURGE
-  {65, {0,0,0,0,1,1,0,0}}, //key up     
-  {66, {0,0,0,0,-1,-1,0,0}}, //key down
-  //PITCH
-  {73, {1,1,0,0,0,0,0,0}}, //I
-  {105, {1,1,0,0,0,0,0,0}}, //i
-  {44, {0,0,1,1,0,0,0,0}}, //,
-  //YAW
-  {74, {0,1,1,0,0,0,0,0}}, //J
-  {106, {0,1,1,0,0,0,0,0}}, //j
-  {76, {1,0,0,1,0,0,0,0}}, //L
-  {108, {1,0,0,1,0,0,0,0}}, //l
-};
+  {87, {0.1,0.1,0.1,0.1,0,0,0,0}}, //W          
+  {119, {0.1,0.1,0.1,0.1,0,0,0,0}}, //w
+  {88, {-0.1,-0.1,-0.1,-0.1,0,0,0,0}}, //X
+  {120, {-0.1,-0.1,-0.1,-0.1,0,0,0,0}}, //x
+  //-> SWAY 
+  {68, {0,0,0,0,0,0,-0.1,0.1}}, //D          
+  {100, {0,0,0,0,0,0,-0.1,0.1}}, //d
+  {65, {0,0,0,0,0,0,0.1,-0.1}}, //A
+  {97, {0,0,0,0,0,0,0.1,-0.1}}, //a
+  //-> HEAVE
+  {73, {0,0,0,0,0.1,0.1,0,0}}, //I     
+  {105, {0,0,0,0,0.1,0.1,0,0}}, //i
+  {44, {0,0,0,0,-0.1,-0.1,0,0}}, //,
+  //-> PITCH
+  {82, {0.1,0.1,-0.1,-0.1,0,0,0,0}}, //R
+  {114, {0.1,0.1,-0.1,-0.1,0,0,0,0}}, //r
+  {86, {-0.1,-0.1,0.1,0.1,0,0,0,0}}, //V
+  {118, {-0.1,-0.1,0.1,0.1,0,0,0,0}}, //v
+  //->YAW ON POINT
+  {74, {0,0,0,0,0,0,-0.1,-0.1}}, //J
+  {106, {0,0,0,0,0,0,-0.1,-0.1}}, //j
+  {76, {0,0,0,0,0,0,0.1,0.1}}, //L
+  {108, {0,0,0,0,0,0,0.1,0.1}}, //l
+  //->YAW WITH FOWARD/BACKWARD MOTION
+  {81, {0.1,0,0,0.1,0,0,0,0}}, //Q
+  {113, {0.1,0,0,0.1,0,0,0,0}}, //q
+  {69, {0,0.1,0.1,0,0,0,0,0}}, //E
+  {101, {0,0.1,0.1,0,0,0,0,0}}, //e
+  {90, {-0.1,-0,-0,-0.1,0,0,0,0}}, //Z
+  {122, {-0.1,-0,-0,-0.1,0,0,0,0}}, //z
+  {67, {-0,-0.1,-0.1,-0,0,0,0,0}}, //C
+  {99, {-0,-0.1,-0.1,-0,0,0,0,0}}, //c
 
-std::map<int, std::vector<double>> thruster_speed{
-  {50, {1.9}}, //2, SPEED UP
-  {49, {0.9}}, //1, SPEED DOWN
 };
 
 double t0(0), t1(0), t2(0), t3(0), t4(0), t5(0), t6(0), t7(0);
-double speed = 1;
 
 int getChar()
 {
@@ -85,21 +91,29 @@ int main(int argc, char **argv)
         t6=thrusters[key][6];
         t7=thrusters[key][7];
       }
-      //speed key detection
-      if(thruster_speed.count(key)==1){
-        speed = speed * thruster_speed[key][0];
+
+      if(key==32){ //STOP ALL. Reset speed.
+        setpoints[0] = t0;
+        setpoints[1] = t1;
+        setpoints[2] = t2;
+        setpoints[3] = t3;
+        setpoints[4] = t4;
+        setpoints[5] = t5;
+        setpoints[6] = t6;
+        setpoints[7] = t7;
+      }
+      else{
+        //Update. Adds to previous value.
+        setpoints[0] = setpoints[0] + t0;
+        setpoints[1] = setpoints[1] + t1;
+        setpoints[2] = setpoints[2] + t2;
+        setpoints[3] = setpoints[3] + t3;
+        setpoints[4] = setpoints[4] + t4;
+        setpoints[5] = setpoints[5] + t5;
+        setpoints[6] = setpoints[6] + t6;
+        setpoints[7] = setpoints[7] + t7; 
       }
       
-      //update
-      setpoints[0] = t0 * speed;
-      setpoints[1] = t1 * speed;
-      setpoints[2] = t2 * speed;
-      setpoints[3] = t3 * speed;
-      setpoints[4] = t4 * speed;
-      setpoints[5] = t5 * speed;
-      setpoints[6] = t6 * speed;
-      setpoints[7] = t7 * speed;
-
       // Publish setpoints
       cola2_msgs::Setpoints msg_setpoints;
       msg_setpoints.header.seq = count;
