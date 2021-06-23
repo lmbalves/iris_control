@@ -1,3 +1,22 @@
+// SETPOINTS_MKII.cpp 
+// 8 thrusters -> 4 in x axis
+//             -> 2 in y axis
+//             -> 2 in z axis
+          
+// SURGE -> W and X
+// SWAY -> A and D
+// HEAVE -> i and ,
+// PITCH -> R and V
+// YAW (On Z axis) -> J and L
+// YAW (with foward motion) -> Q and E
+// YAW (with backward motion) -> Z and C
+// FULL STOP -> Space Bar
+
+// Speed increases 0.1 in every click;
+// Previous thruster setpoint is maintained unless FULL STOP (all to 0)
+
+
+
 #include <ros/ros.h>
 #include <cola2_msgs/Setpoints.h>
 #include <sensor_msgs/Joy.h>
