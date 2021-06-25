@@ -10,46 +10,39 @@
 std::map<int, std::vector<double>> thrusters
 {
 
+  {67,{0,0,0,0,-0.15,-0.3,-0.5,0.3}},//t
+  {116,{0,0,0,0,-0.15,-0.3,-0.5,0.3}},
+  //{116,{0,0,0,0,-0.2,-0.5,-0.9,0.65}},
 
-  //YAW + propulsor
-  {99, {1,1,1,1,0,0,-1,-1}}, //c
-  {122, {1,1,1,1,0,0,1,1}}, //z
-  {67, {1,1,1,1,0,0,-1,-1}}, //C
-  {90, {1,1,1,1,0,0,1,1}}, //Z
+//{116,{0,0,0,0,-0.2,-0.5,-0.9,0.65}},
 
+  //{70,{0,0,0,0,-0.2,-0.6,-1,0.8}},//f 
+  //{102,{0,0,0,0,-0.2,-0.6,-1,0.8}}, 
+
+  //{71,{0,0,0,0,-0.5,-0.2,0.9,-0.65}},//g frente baixo
+  //{103,{0,0,0,0,-0.5,-0.2,0.9,-0.65}}, 
 
   {32, {0,0,0,0,0,0,0,0}},  //space bar -> COMPLETE STOP
   //-> HEAVE
-  {87, {1,1,1,1,0,0,0,0}}, //W          
-  {119, {1,1,1,1,0,0,0,0}}, //w
-  {88, {-1,-1,-1,-1,0,0,0,0}}, //X
+  {87, {1,1,1,1,0,0,0,0}}, //W          		front
+  {119, {1,1,1,1,0,0,0,0}}, //w				
+  {88, {-1,-1,-1,-1,0,0,0,0}}, //X			back
   {120, {-1,-1,-1,-1,0,0,0,0}}, //x
-  //-> SWAY 
-  {68, {0,0,0,0,0,0,1,-1}}, //D          
-  {100, {0,0,0,0,0,0,1,-1}}, //d
-  {65, {0,0,0,0,0,0,-1,1}}, //A
-  {97, {0,0,0,0,0,0,-1,1}}, //a
   //-> SURGE
-  {65, {0,0,0,0,1,1,0,0}}, //key up     
-  {66, {0,0,0,0,-1,-1,0,0}}, //key down
-  //PITCH
-  {73, {1,1,0,0,0,0,0,0}}, //I
-  {105, {1,1,0,0,0,0,0,0}}, //i
-  {44, {0,0,1,1,0,0,0,0}}, //,
-  //YAW
-  {74, {0,1,1,0,0,0,0,0}}, //J
-  {106, {0,1,1,0,0,0,0,0}}, //j
-  {76, {1,0,0,1,0,0,0,0}}, //L
-  {108, {1,0,0,1,0,0,0,0}}, //l
+  {65, {0,0,0,0,1,1,0,0}}, //key up     		z control
+  {66, {0,0,0,0,-1,-1,0,0}}, //key down			z control
+  {68, {0,0,0,0,0,-0.4,0.25,0.25}},     //seta esquerda  yaw control 
+  {67, {0,0,0,0,-0.4,0,-0.25,-0.25}},   //D  	seta direita	yaw control 
 };
 
 std::map<int, std::vector<double>> thruster_speed{
-  {50, {1.9}}, //2, SPEED UP
-  {49, {0.9}}, //1, SPEED DOWN
+  {49, {1.5}}, //1, SPEED UP
+  {50, {0.66}}, //2, SPEED DOWN
+  {51, {0}}, //3, SPEED = 1
 };
 
 double t0(0), t1(0), t2(0), t3(0), t4(0), t5(0), t6(0), t7(0);
-double speed = 1;
+double speed_iris = 0.5;
 
 int getChar()
 {
@@ -69,7 +62,7 @@ int getChar()
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "pub_setpoints");
+  ros::init(argc, argv, "pub_setpoints2");
   ros::NodeHandle nh_;
   std::size_t setpoints_sent_;
   ros::Publisher pub_thrusters_ = nh_.advertise<cola2_msgs::Setpoints>("/iris/controller/thruster_setpoints", 1000);
@@ -96,18 +89,21 @@ int main(int argc, char **argv)
       }
       //speed key detection
       if(thruster_speed.count(key)==1){
-        speed = speed * thruster_speed[key][0];
+        speed_iris = speed_iris * thruster_speed[key][0];
+        if (speed_iris==0){
+            speed_iris=1;
+        }
       }
       
       //update
-      setpoints[0] = t0 * speed;
-      setpoints[1] = t1 * speed;
-      setpoints[2] = t2 * speed;
-      setpoints[3] = t3 * speed;
-      setpoints[4] = t4 * speed;
-      setpoints[5] = t5 * speed;
-      setpoints[6] = t6 * speed;
-      setpoints[7] = t7 * speed;
+      setpoints[0] = t0 * speed_iris;
+      setpoints[1] = t1 * speed_iris;
+      setpoints[2] = t2 * speed_iris;
+      setpoints[3] = t3 * speed_iris;
+      setpoints[4] = t4 * speed_iris;
+      setpoints[5] = t5 * speed_iris;
+      setpoints[6] = t6 * speed_iris;
+      setpoints[7] = t7 * speed_iris;
 
       // Publish setpoints
       cola2_msgs::Setpoints msg_setpoints;

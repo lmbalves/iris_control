@@ -9,6 +9,9 @@ add_compile_options(-std=c++11)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   # ROS Dependencies
+  cv_bridge
+  image_transport
+
   rosbridge_server
   tf
   topic_tools
@@ -32,7 +35,11 @@ find_package(catkin REQUIRED COMPONENTS
   
   #cola2_lib_ros
   cola2_msgs
+  message_generation
 )
+
+
+#ament_python_install_package(${PROJECT_NAME})
 
 # System Dependencies
 find_package(Boost REQUIRED)
@@ -59,6 +66,32 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
 )
+
+#install(PROGRAMS
+#  /src/path_motor_control2.py
+#  DESTINATION lib/${iris_control}
+#)
+catkin_python_setup()
+
+catkin_install_python(PROGRAMS  
+  src/path_motor_control2.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+catkin_install_python(PROGRAMS  
+  src/control_vision.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+catkin_install_python(PROGRAMS  
+  src/control_rotors.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+
+#adicionei estes 3 para testar um codigo diferente
+add_executable(setpoints_pub_node2 src/setpoints_pub_iris2.cpp)  
+add_dependencies(setpoints_pub_node2 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(setpoints_pub_node2 ${catkin_LIBRARIES}) 
 
 add_executable(setpoints_pub_node src/setpoints_pub_iris.cpp)
 add_dependencies(setpoints_pub_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
