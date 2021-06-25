@@ -84,6 +84,15 @@ int main(int argc, char **argv)
     const int KEY_DOT = 46;
     const int KEY_COMA = 44;
 
+    // test keys
+    const int KEY_c = 99;
+    const int KEY_z = 122;
+    const int KEY_C = 67;
+    const int KEY_Z = 90;
+  
+
+
+
       // Find which button is pressed
       int key = getChar();
 
@@ -121,6 +130,26 @@ int main(int argc, char **argv)
         setpoints[6] = speed;
         setpoints[7] = speed;
       }
+      else if (key == KEY_c || key == KEY_C)
+      {
+        // setpoints = {0.25, 0.25, 0.25, 0.25, 0.0, 0.0, -0.25, -0.25};
+	setpoints[1] = speed;
+        setpoints[2] = speed*0.98;
+	setpoints[3] = speed*0.98;
+        setpoints[0] = speed;
+        setpoints[6] = -speed;
+        setpoints[7] = -speed;
+      }
+      else if (key == KEY_z || key == KEY_Z)
+      {
+        // setpoints = {0.25, 0.25, 0.25, 0.25, 0.0, 0.0, 0.25, 0.25};
+	      setpoints[1] = speed;
+        setpoints[2] = speed*0.98;
+	      setpoints[3] = speed*0.98;
+        setpoints[0] = speed;
+        setpoints[6] = speed;
+        setpoints[7] = speed;
+      }
        else if (key == KEY_ESC)
       {
         if (getChar() == KEY_OBRACKET)
@@ -150,6 +179,7 @@ int main(int argc, char **argv)
             setpoints[6] = -speed;
             setpoints[7] = speed;
           }
+
         }
       }
       else if (key == KEY_O || key == KEY_o)
