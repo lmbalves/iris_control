@@ -35,7 +35,8 @@ std::map<int, std::vector<double>> thrusters
   {67, {0,0,0,0,-0.4,0,-0.25,-0.25}},   //D  	seta direita	yaw control 
 };
 
-std::map<int, std::vector<double>> thruster_speed{
+std::map<int, std::vector<double>> thruster_speed
+{
   {49, {1.5}}, //1, SPEED UP
   {50, {0.66}}, //2, SPEED DOWN
   {51, {0}}, //3, SPEED = 1
