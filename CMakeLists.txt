@@ -91,7 +91,7 @@ catkin_install_python(PROGRAMS
 #adicionei estes 3 para testar um codigo diferente
 add_executable(setpoints_pub_node2 src/setpoints_pub_iris2.cpp)  
 add_dependencies(setpoints_pub_node2 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(setpoints_pub_node2 ${catkin_LIBRARIES}) 
+target_link_libraries(setpoints_pub_node2 ${catkin_LIBRARIES})
 
 add_executable(setpoints_pub_node src/setpoints_pub_iris.cpp)
 add_dependencies(setpoints_pub_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -100,3 +100,11 @@ target_link_libraries(setpoints_pub_node ${catkin_LIBRARIES})
 add_executable(setpoints_mkII src/setpoints_mkII.cpp)
 add_dependencies(setpoints_mkII ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(setpoints_mkII ${catkin_LIBRARIES})
+
+add_executable(range_calculator src/range_calculator.cpp)
+add_dependencies(range_calculator ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(range_calculator ${catkin_LIBRARIES})
+
+add_executable(setpoints_range_pose src/setpoints_range_pose.cpp)
+add_dependencies(setpoints_range_pose ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(setpoints_range_pose ${catkin_LIBRARIES})
