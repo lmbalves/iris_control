@@ -33,14 +33,14 @@ int main(int argc, char **argv)
       {
           setpoints[i] = speed;
       }
-      setpoints[0] = speed - (yaw_cmd);
-      setpoints[1] = speed + (yaw_cmd);
-      setpoints[2] = speed + (yaw_cmd);
-      setpoints[3] = speed - (yaw_cmd);
+      setpoints[0] = speed - (yaw_cmd)/4;
+      setpoints[1] = speed + (yaw_cmd)/4;
+      setpoints[2] = speed + (yaw_cmd)/4;
+      setpoints[3] = speed - (yaw_cmd)/4;
       setpoints[4] = descent_speed;
       setpoints[5] = descent_speed;
-      // setpoints[6] = -yaw_cmd;
-      // setpoints[7] = yaw_cmd;
+      setpoints[6] = -yaw_cmd;
+      setpoints[7] = yaw_cmd;
       // Publish setpoints
       cola2_msgs::Setpoints msg_setpoints;
       msg_setpoints.header.seq = count;

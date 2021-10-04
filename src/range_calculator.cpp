@@ -20,7 +20,7 @@ double distance(double x1, double y1,
 double speed, radius, des_yaw, des_z, roll, pitch, yaw, com_yaw, rel_heading, speed_X, speed_Y;
 double k_z = 1;
 double k = 4;
-double k_yaw = 0.075;
+double k_yaw = 0.02;
 double alpha  = 1;
 // double distance(double x1, double y1,
 //             double z1, double x2,
@@ -54,7 +54,7 @@ void Callback(const visualization_msgs::MarkerArray::ConstPtr &msg)
   // for (it == 0; it != size; ++it)
   // {
     // speed = 1;
-    radius = 10;
+    radius = 5;
     visualization_msgs::Marker marker = msg->markers[0];
     ROS_INFO("X = %f", marker.pose.position.x);
     ROS_INFO("Y = %f", marker.pose.position.y);
@@ -69,7 +69,7 @@ void Callback(const visualization_msgs::MarkerArray::ConstPtr &msg)
     if(rel_heading>=M_PI){ rel_heading-=2*M_PI;}
     else if(rel_heading<=M_PI){rel_heading+=2*M_PI;}
     ROS_INFO("Relative heading = %f", rel_heading);
-    if (range > (2 * radius))
+    if (range > (1.1 * radius))
     {
       com_yaw =  rel_heading - ((5 * M_PI) / 6) + (( speed / range ) * sin(yaw - rel_heading)); 
     }
