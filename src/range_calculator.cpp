@@ -1,3 +1,15 @@
+
+/**
+ * @file range_calculator.cpp
+ * @author Luis Alves (lmbalves@gmail.com)
+ * @brief This node calculates the range and using a lyapunov approach calculates and
+ *        publishes a commanded yaw
+ * @version 0.1
+ * @date 2021-10-04
+ * 
+ * 
+ */
+
 #include "ros/ros.h"
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
@@ -18,9 +30,9 @@ double distance(double x1, double y1,
             double z1, double x2,
             double y2, double z2);
 double speed, radius, des_yaw, des_z, roll, pitch, yaw, com_yaw, rel_heading, speed_X, speed_Y;
-double k_z = 1;
+double k_z = 1.1;
 double k = 4;
-double k_yaw = 0.02;
+double k_yaw = 0.03;
 double alpha  = 1;
 // double distance(double x1, double y1,
 //             double z1, double x2,
@@ -77,10 +89,8 @@ void Callback(const visualization_msgs::MarkerArray::ConstPtr &msg)
     {
       des_yaw = rel_heading - M_PI_2 - (M_PI / 3) * pow((range - radius ) / radius, k);
       com_yaw = des_yaw  - ( speed / (alpha * range) ) * sin(yaw - rel_heading) - ((k * speed*M_PI) / (3 * pow(radius,k) * alpha )) * pow(range, k -1) * cos(yaw - rel_heading);
+      com_yaw = com_yaw + M_PI_2;
     }
-    // if(des_yaw>=M_PI){ des_yaw-=2*M_PI;}
-    // else if(des_yaw<=M_PI){des_yaw+=2*M_PI;}
-  // }
     ROS_INFO("com_yaw = %f", com_yaw);
     ROS_INFO("roll: %f pitch: %f yaw: %f", roll, pitch, yaw);
 }
