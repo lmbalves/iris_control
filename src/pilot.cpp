@@ -1,4 +1,3 @@
-
 /**
  * @file range_calculator.cpp
  * @author Luis Alves (lmbalves@gmail.com)
