@@ -1,5 +1,6 @@
 #include <ros/ros.h>
-#include <cola2_msgs/Setpoints.h>
+#include <std_msgs/Float64.h>
+#include <std_msgs/Float64MultiArray.h>
 #include <sensor_msgs/Joy.h>
 #include <termios.h>
 #include <csignal>
@@ -66,7 +67,7 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "pub_setpoints2");
   ros::NodeHandle nh_;
   std::size_t setpoints_sent_;
-  ros::Publisher pub_thrusters_ = nh_.advertise<cola2_msgs::Setpoints>("/iris/controller/thruster_setpoints", 1000);
+  ros::Publisher pub_thrusters_ = nh_.advertise<std_msgs::Float64MultiArray>("/iris/controller/thruster_setpoints", 1000);
   ros::Rate loop_rate(10);
   std::vector<double> setpoints = {0,0,0,0,0,0,0,0};
 
@@ -107,11 +108,11 @@ int main(int argc, char **argv)
       setpoints[7] = t7 * speed_iris;
 
       // Publish setpoints
-      cola2_msgs::Setpoints msg_setpoints;
-      msg_setpoints.header.seq = count;
-      msg_setpoints.header.stamp = ros::Time::now();  
-      msg_setpoints.header.frame_id = "/iris/base_link";
-      msg_setpoints.setpoints = setpoints;
+      std_msgs::Float64MultiArray msg_setpoints;
+      // msg_setpoints.header.seq = count;
+      // msg_setpoints.header.stamp = ros::Time::now();  
+      // msg_setpoints.header.frame_id = "/iris/base_link";
+      msg_setpoints.data = setpoints;
       pub_thrusters_.publish(msg_setpoints);
       
       ros::spinOnce();

@@ -29,12 +29,13 @@ find_package(catkin REQUIRED COMPONENTS
   visualization_msgs
   diagnostic_msgs
   actionlib
+  stonefish_ros
   #dynamic_reconfigure
 
   # COLA2 Dependencies
   
   #cola2_lib_ros
-  cola2_msgs
+  # cola2_msgs
   message_generation
 )
 
@@ -57,8 +58,9 @@ catkin_package(
                  std_msgs
                  sensor_msgs
                  actionlib
-                 cola2_lib_ros
-                 cola2_msgs
+                 stonefish_ros
+                #  cola2_lib_ros
+                #  cola2_msgs
   DEPENDS Boost
 
 )
@@ -87,6 +89,10 @@ catkin_install_python(PROGRAMS
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+catkin_install_python(PROGRAMS  
+  src/plot_path.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 #adicionei estes 3 para testar um codigo diferente
 add_executable(setpoints_pub_node2 src/setpoints_pub_iris2.cpp)  

@@ -1,5 +1,6 @@
 #include <ros/ros.h>
-#include <cola2_msgs/Setpoints.h>
+#include <std_msgs/Float64.h>
+#include <std_msgs/Float64MultiArray.h>
 #include <termios.h>
 #include <tf/tf.h>
 double yaw_cmd, descent_speed;
@@ -18,7 +19,7 @@ int main(int argc, char **argv)
   ros::Subscriber sub_range;
   ros::Publisher pub_thrusters_;
   // Create publisher
-  pub_thrusters_ = nh_.advertise<cola2_msgs::Setpoints>("/iris/controller/thruster_setpoints", 1000);
+  pub_thrusters_ = nh_.advertise<std_msgs::Float64MultiArray>("/iris/controller/thruster_setpoints", 1000);
   sub_range = nh.subscribe("/iris/controller/cmd_vel",1000, rangeCallback);
 
  
@@ -42,11 +43,11 @@ int main(int argc, char **argv)
       setpoints[6] = -yaw_cmd;
       setpoints[7] = yaw_cmd;
       // Publish setpoints
-      cola2_msgs::Setpoints msg_setpoints;
-      msg_setpoints.header.seq = count;
-      msg_setpoints.header.stamp = ros::Time::now();  
-      msg_setpoints.header.frame_id = "/iris/base_link";
-      msg_setpoints.setpoints = setpoints;
+      std_msgs::Float64MultiArray msg_setpoints;
+    //   msg_setpoints.header.seq = count;
+    //   msg_setpoints.header.stamp = ros::Time::now();  
+    //   msg_setpoints.header.frame_id = "/iris/base_link";
+      msg_setpoints.data = setpoints;
       pub_thrusters_.publish(msg_setpoints);
       ros::spinOnce();
       loop_rate.sleep();
