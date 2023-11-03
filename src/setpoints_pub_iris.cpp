@@ -1,5 +1,6 @@
 #include <ros/ros.h>
-#include <cola2_msgs/Setpoints.h>
+#include <std_msgs/Float64.h>
+#include <std_msgs/Float64MultiArray.h>
 #include <termios.h>
 
 #include <csignal>
@@ -29,7 +30,7 @@ int main(int argc, char **argv)
 
   ros::Publisher pub_thrusters_;
   // Create publisher
-  pub_thrusters_ = nh_.advertise<cola2_msgs::Setpoints>("/iris/controller/thruster_setpoints", 1000);
+  pub_thrusters_ = nh_.advertise<std_msgs::Float64MultiArray>("/iris/controller/thruster_setpoints", 1000);
 
 
  
@@ -228,11 +229,11 @@ int main(int argc, char **argv)
         continue;
       }
       // Publish setpoints
-      cola2_msgs::Setpoints msg_setpoints;
-      msg_setpoints.header.seq = count;
-      msg_setpoints.header.stamp = ros::Time::now();  
-      msg_setpoints.header.frame_id = "/iris/base_link";
-      msg_setpoints.setpoints = setpoints;
+      std_msgs::Float64MultiArray msg_setpoints;
+      // msg_setpoints.header.seq = count;
+      // msg_setpoints.header.stamp = ros::Time::now();  
+      // msg_setpoints.header.frame_id = "/iris/base_link";
+      msg_setpoints.data = setpoints;
       pub_thrusters_.publish(msg_setpoints);
       ros::spinOnce();
       loop_rate.sleep();
