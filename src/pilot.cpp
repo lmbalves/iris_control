@@ -79,8 +79,8 @@ void Callback(const visualization_msgs::MarkerArray::ConstPtr &msg)
     ROS_INFO("com_yaw = %f", com_yaw);
     ROS_INFO("roll: %f pitch: %f yaw: %f", roll, pitch, yaw);
 
-    control_x = -lyapunov_deriv * range_error;
-    control_y = -lyapunov_deriv * range_error/ range;
+    control_x = -lyapunov_deriv * range_error / range;
+    control_y = -lyapunov_deriv * range_error / range;
     control_z = -lyapunov_deriv_z * z_error / desired_z;
 
     // Print Lyapunov value for monitoring
