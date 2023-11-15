@@ -114,3 +114,7 @@ target_link_libraries(range_calculator ${catkin_LIBRARIES})
 add_executable(setpoints_range_pose src/setpoints_range_pose.cpp)
 add_dependencies(setpoints_range_pose ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(setpoints_range_pose ${catkin_LIBRARIES})
+
+add_executable(pilot src/pilot.cpp)
+add_dependencies(pilot ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(pilot ${catkin_LIBRARIES})
