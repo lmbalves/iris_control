@@ -21,6 +21,7 @@
 // Define Lyapunov gains
 double k_range = 0.1;
 double k_z = 0.6;
+double k_yaw = 0.03;
 
 // Define desired range, z
 double desired_range = 2.0;
@@ -32,15 +33,16 @@ double range, altitude, prev_altitude;
 
 double control_x, control_y, control_z;
 
-double speed, speed_X, speed_Y;
+double speed;
 
-double roll, pitch, yaw;
+double des_yaw, roll, pitch, yaw, com_yaw, rel_heading;
 
 
 geometry_msgs::Vector3 linear_acceleration;
 geometry_msgs::Vector3 velocity;
 geometry_msgs::Vector3 displacement;
 geometry_msgs::Vector3 direction;
+geometry_msgs::Vector3 desired_heading;
 
 void Callback(const visualization_msgs::MarkerArray::ConstPtr &msg)
 {
@@ -62,14 +64,20 @@ void Callback(const visualization_msgs::MarkerArray::ConstPtr &msg)
     double altitude_deriv = (altitude - prev_altitude) / time_interval;
     prev_altitude = altitude;
 
-    // Calculate the control commands as function
-    // control_x = -lyapunov_deriv * marker.pose.position.x / range;
-    // control_y = -lyapunov_deriv * marker.pose.position.y / range;
-    
-    // control_z = -lyapunov_deriv * marker.pose.position.z / range;
-    geometry_msgs::Vector3 desired_heading;
     desired_heading.x = 1.0 / lyapunov_func;
     desired_heading.y = 1.0 / lyapunov_func;
+    rel_heading = (M_PI_2-atan2(desired_heading.y, desired_heading.x));
+
+    if(rel_heading>=M_PI){ rel_heading-=2*M_PI;}
+    else if(rel_heading<=M_PI){rel_heading+=2*M_PI;}
+    if(rel_heading>=M_PI){ rel_heading-=2*M_PI;}
+    else if(rel_heading<=M_PI){rel_heading+=2*M_PI;}
+    ROS_INFO("Relative heading = %f", rel_heading);
+    
+    com_yaw =  rel_heading - ((5 * M_PI) / 6) + (( speed / range ) * sin(yaw - rel_heading)); 
+    
+    ROS_INFO("com_yaw = %f", com_yaw);
+    ROS_INFO("roll: %f pitch: %f yaw: %f", roll, pitch, yaw);
 
     control_x = -lyapunov_deriv * range_error;
     control_y = -lyapunov_deriv * range_error/ range;
@@ -100,11 +108,9 @@ void quaternionCallback(const sensor_msgs::Imu::ConstPtr &msg)
 
 void dvl_Callback(const stonefish_ros::DVL::ConstPtr &msg)
 {
-  speed_X = msg->velocity.x;
-  speed_Y = msg->velocity.y;
   altitude = msg->altitude;
   ROS_INFO("altitude: %f", altitude);
-  speed = sqrt( pow( speed_X, 2 ) + pow( speed_Y, 2 ));
+  speed = sqrt( pow( msg->velocity.x, 2 ) + pow( msg->velocity.y, 2 ));
 }
 
 int main(int argc, char **argv)
@@ -125,7 +131,7 @@ int main(int argc, char **argv)
     msg_control.linear.x = -control_x;
     msg_control.linear.y = -control_y;
     msg_control.linear.z = -control_z;
-
+    msg_control.angular.z = -k_yaw * com_yaw;
     pub.publish(msg_control);
     ros::spinOnce();
 
