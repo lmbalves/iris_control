@@ -35,16 +35,16 @@ int main(int argc, char **argv)
       // setpoints[1] = fwd_speed-(lat_speed)/4 + (yaw_cmd)/4;
       // setpoints[2] = fwd_speed-(lat_speed)/4 + (yaw_cmd)/4;
       // setpoints[3] = fwd_speed+(lat_speed)/4 - (yaw_cmd)/4;
-      setpoints[0] = fwd_speed - (yaw_cmd)/4;
-      setpoints[1] = fwd_speed + (yaw_cmd)/4;
-      setpoints[2] = fwd_speed + (yaw_cmd)/4;
-      setpoints[3] = fwd_speed - (yaw_cmd)/4;
+      setpoints[0] = fwd_speed - (yaw_cmd)/2;
+      setpoints[1] = fwd_speed + (yaw_cmd)/2;
+      setpoints[2] = fwd_speed + (yaw_cmd)/2;
+      setpoints[3] = fwd_speed - (yaw_cmd)/2;
       setpoints[4] = -descent_speed;
       setpoints[5] = -descent_speed;
       // setpoints[6] = -lat_speed-yaw_cmd;
       // setpoints[7] = -lat_speed+yaw_cmd;
-      setpoints[6] = - yaw_cmd;
-      setpoints[7] = yaw_cmd;
+      setpoints[6] = - yaw_cmd/2;
+      setpoints[7] = yaw_cmd/2;
 
       // Publish setpoints
       std_msgs::Float64MultiArray msg_setpoints;

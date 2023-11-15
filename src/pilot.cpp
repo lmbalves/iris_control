@@ -19,9 +19,9 @@
 #include <geometry_msgs/Vector3.h>
 
 // Define Lyapunov gains
-double k_range = 0.1;
-double k_z = 0.6;
-double k_yaw = 0.03;
+double k_range = 0.2;
+double k_z = 0.7;
+double k_yaw = 0.15;
 
 // Define desired range, z
 double desired_range = 2.0;
