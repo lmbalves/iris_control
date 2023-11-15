@@ -9,6 +9,7 @@ void rangeCallback(const geometry_msgs::Twist::ConstPtr &msg)
     descent_speed = msg->linear.z;
     fwd_speed = msg->linear.x;
     lat_speed = msg->linear.y;
+    yaw_cmd = msg->angular.z;
 }
 int main(int argc, char **argv)
 {
@@ -30,14 +31,20 @@ int main(int argc, char **argv)
   
   while (ros::ok())
   {
-      setpoints[0] = fwd_speed+lat_speed/4;
-      setpoints[1] = fwd_speed-lat_speed/4;
-      setpoints[2] = fwd_speed-lat_speed/4;
-      setpoints[3] = fwd_speed+lat_speed/4;;
+      // setpoints[0] = fwd_speed+(lat_speed/4) - (yaw_cmd)/4;
+      // setpoints[1] = fwd_speed-(lat_speed)/4 + (yaw_cmd)/4;
+      // setpoints[2] = fwd_speed-(lat_speed)/4 + (yaw_cmd)/4;
+      // setpoints[3] = fwd_speed+(lat_speed)/4 - (yaw_cmd)/4;
+      setpoints[0] = fwd_speed - (yaw_cmd)/4;
+      setpoints[1] = fwd_speed + (yaw_cmd)/4;
+      setpoints[2] = fwd_speed + (yaw_cmd)/4;
+      setpoints[3] = fwd_speed - (yaw_cmd)/4;
       setpoints[4] = -descent_speed;
       setpoints[5] = -descent_speed;
-      setpoints[6] = -lat_speed;
-      setpoints[7] = -lat_speed;
+      // setpoints[6] = -lat_speed-yaw_cmd;
+      // setpoints[7] = -lat_speed+yaw_cmd;
+      setpoints[6] = - yaw_cmd;
+      setpoints[7] = yaw_cmd;
 
       // Publish setpoints
       std_msgs::Float64MultiArray msg_setpoints;
