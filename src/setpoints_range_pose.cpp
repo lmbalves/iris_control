@@ -4,7 +4,7 @@
 #include <termios.h>
 #include <tf/tf.h>
 double yaw_cmd, descent_speed, fwd_speed, lat_speed;
-void rangeCallback(const geometry_msgs::Twist::ConstPtr &msg)
+void pilotCallback(const geometry_msgs::Twist::ConstPtr &msg)
 {
     descent_speed = msg->linear.z;
     fwd_speed = msg->linear.x;
@@ -16,15 +16,14 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "pub_setpoints");
 
   ros::NodeHandle nh, nh_;
-
-
-  ros::Subscriber sub_range;
+  
+  //subcribe pilot
+  ros::Subscriber sub_pilot;
+  sub_range = nh.subscribe("/iris/controller/cmd_vel",1000, pilotCallback);
+  //setpoints publisher
   ros::Publisher pub_thrusters;
-  // Create publisher
   pub_thrusters = nh_.advertise<std_msgs::Float64MultiArray>("/iris/controller/thruster_setpoints", 1000);
-  sub_range = nh.subscribe("/iris/controller/cmd_vel",1000, rangeCallback);
 
- 
   ros::Rate loop_rate(10);
 
   std::vector<double> setpoints = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
@@ -46,7 +45,7 @@ int main(int argc, char **argv)
       setpoints[6] = - yaw_cmd/2;
       setpoints[7] = yaw_cmd/2;
 
-      // Publish setpoints
+      // publish setpoints
       std_msgs::Float64MultiArray msg_setpoints;
       msg_setpoints.data = setpoints;
       pub_thrusters.publish(msg_setpoints);
