@@ -18,12 +18,12 @@
 #include <stonefish_ros/DVL.h>
 #include <geometry_msgs/Vector3.h>
 
-// Define Lyapunov gains
+// gains
 double k_range = 0.2;
 double k_z = 0.7;
 double k_yaw = 0.15;
 
-// Define desired range, z
+
 double desired_range = 2.0;
 double desired_z = 2.0;
 
@@ -48,13 +48,13 @@ void Callback(const visualization_msgs::MarkerArray::ConstPtr &msg)
 {
     visualization_msgs::Marker marker = msg->markers[0];
 
-    // Calculate the range to the beacon
+    // calculate the range to the beacon
     range = sqrt(pow(marker.pose.position.x, 2) + pow(marker.pose.position.y, 2) + pow(marker.pose.position.z, 2));
     double range_error = range - desired_range;
     ROS_INFO("altitude_xxx: %f", altitude);
     double z_error = desired_z - altitude;
 
-    // Lyapunov function based on the range error
+    // lyapunov function based on the range error
     double lyapunov_func = 0.5 * k_range * pow(range_error, 2);
     double lyapunov_func_z = 0.5 * k_z* pow(z_error, 2);
 
@@ -75,19 +75,18 @@ void Callback(const visualization_msgs::MarkerArray::ConstPtr &msg)
     ROS_INFO("Relative heading = %f", rel_heading);
     
     com_yaw =  rel_heading - ((5 * M_PI) / 6) + (( speed / range ) * sin(yaw - rel_heading)); 
-    
-    ROS_INFO("com_yaw = %f", com_yaw);
-    ROS_INFO("roll: %f pitch: %f yaw: %f", roll, pitch, yaw);
 
     control_x = -lyapunov_deriv * range_error / range;
     control_y = -lyapunov_deriv * range_error / range;
     control_z = -lyapunov_deriv_z * z_error / desired_z;
 
-    // Print Lyapunov value for monitoring
-    ROS_INFO("Lyapunov Value: %f", lyapunov_func);
+    // monitoring
+    ROS_INFO("lyapunov_func: %f", lyapunov_func);
     ROS_INFO("range_error: %f", range_error);
     ROS_INFO("lyapunov_func_z: %f", lyapunov_func_z);
     ROS_INFO("z_error: %f", z_error);
+    ROS_INFO("com_yaw = %f", com_yaw);
+    ROS_INFO("roll: %f pitch: %f yaw: %f", roll, pitch, yaw);
 }
 
 void quaternionCallback(const sensor_msgs::Imu::ConstPtr &msg)
@@ -115,14 +114,15 @@ void dvl_Callback(const stonefish_ros::DVL::ConstPtr &msg)
 
 int main(int argc, char **argv)
 {
-  
   ros::init(argc, argv, "pilot");
-
   ros::NodeHandle n, np, nh, nhq;
+
+  // subscribe usbl, dvl and imu
   ros::Subscriber sub = n.subscribe("/iris/navigator/usbl", 1000, Callback);
   ros::Subscriber sub_dvl = nh.subscribe("/iris/navigator/dvl", 1000, dvl_Callback);
-  ros::Publisher pub = np.advertise<geometry_msgs::Twist>("/iris/controller/cmd_vel", 1);
   ros::Subscriber sub_imu = nhq.subscribe("/iris/navigator/imu", 1000, quaternionCallback);
+  ros::Publisher pub = np.advertise<geometry_msgs::Twist>("/iris/controller/cmd_vel", 1);
+
   ros::Rate loop_rate(10);
   while (ros::ok())
   {
