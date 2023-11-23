@@ -19,7 +19,7 @@ int main(int argc, char **argv)
   
   //subcribe pilot
   ros::Subscriber sub_pilot;
-  sub_range = nh.subscribe("/iris/controller/cmd_vel",1000, pilotCallback);
+  sub_pilot = nh.subscribe("/iris/controller/cmd_vel",1000, pilotCallback);
   //setpoints publisher
   ros::Publisher pub_thrusters;
   pub_thrusters = nh_.advertise<std_msgs::Float64MultiArray>("/iris/controller/thruster_setpoints", 1000);
