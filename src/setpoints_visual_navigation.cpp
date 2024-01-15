@@ -17,12 +17,16 @@ void VisualNavigation::thrusterControl(std::vector<float> imageCenterPoints){
     m_xError = imageCenterPoints[0]-imageCenterPoints[2];
     m_yError = imageCenterPoints[1]-imageCenterPoints[3];
 
+    float dt = 0.1;
+    float integral_x = m_xError*dt;
+    float integral_y = m_yError*dt;
+
     /* thruster input values = constant*error */
-    m_thrusterControlX = m_xConstant*m_xError;
-    m_thrusterControlY = m_yConstant*m_yError;
+    m_thrusterControlX = Kpx*m_xError + Kix*integral_x;
+    m_thrusterControlY = Kpy*m_yError + Kiy*integral_y;
 
     /* Normalize thruster input values*/
-    m_thrusterControlXN = (m_thrusterControlX/imageCenterPoints[0]);
+    m_thrusterControlXN = -(m_thrusterControlX/imageCenterPoints[0]);
     m_thrusterControlYN = (m_thrusterControlY/imageCenterPoints[1]);
 
     std::cout << "\n|||||||||||||||||";
