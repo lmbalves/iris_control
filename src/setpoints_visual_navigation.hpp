@@ -32,6 +32,12 @@ private:
     float m_xError, m_yError;
     float m_thrusterControlX, m_thrusterControlY;
     float m_thrusterControlXN, m_thrusterControlYN;
-    float m_xConstant = 0.1;
-    float m_yConstant = 0.5;
+
+    float Kpx = 0.1;
+    float Kpy = 0.5;
+    float Kix = 0.01;
+    float Kiy = 0.001;
+    float Kdx = 0.01;
+    float Kdy = 0.01;
+
 };
