@@ -3,41 +3,49 @@
 #include <std_msgs/Float32MultiArray.h>
 #include <std_msgs/Float64MultiArray.h>
 
-class VisualNavigation
-{
+#ifndef SETPOINTS_VISUAL_NAVIGATION
+#define SETPOINTS_VISUAL_NAVIGATION
+
+const float KPX = 0.1;
+const float KPY = 0.5;
+const float KIX = 0.01;
+const float KIY = 0.001;
+const float KDX = 0.01;
+const float KDY = 0.01;
+const float DT = 0.1;
+
+class VisualNavigation{
 public:
     VisualNavigation(ros::NodeHandle *nh)
     {
-        m_subCenterPoints = nh->subscribe("/iris/proscilica_front/image_center_points",
-                                          1000, &VisualNavigation::imageCenterPointsCallback, this);
+        m_subDetectionData = nh->subscribe("/iris/proscilica_front/ghost_detection_data",
+                                          1000, &VisualNavigation::imageDataCallback, this);
         m_pubThrusters = nh->advertise<std_msgs::Float64MultiArray>("/iris/controller/thruster_setpoints", 1000);
     }
     /**
-     * @brief Callback method that receives a vector containing the center point of the camera image 
-     * and the center point of the highest scoring bounding box.
+     * @brief Callback method that subscribes to a topic published in IRIS Vision - setpoints_visual_navigation.
+     * Message contains a vector with the center point of the image, the center point of the highest
+     * scoring bounding box, image width, image height, bounding box width and height.
      */
-    void imageCenterPointsCallback(const std_msgs::Float32MultiArray::ConstPtr &centerPointsMsg);
+    void imageDataCallback(const std_msgs::Float32MultiArray::ConstPtr &imageDataMsg);
     
     /**
-     * @brief Method that generates normalized inputs to the thrusters.
+     * @brief Method that generates normalized inputs to the thrusters based on received center points.
+     * @param[in] imageData [image center point X, image center point Y, bounding box center point X,
+     * bounding box center point Y, image width, image height, box width, box size].
+     * X, Y are relative to the image, not the world.
      */
-    void thrusterControl(std::vector<float> imageCenterPoints);
+    void thrusterControl(std::vector<float> imageData);
 
 private:
-    ros::Subscriber m_subCenterPoints;
+    ros::Subscriber m_subDetectionData;
     ros::Publisher m_pubThrusters;
-    std::vector<float> m_imageCenterPointsData;
+    std::vector<float> m_imageData;
     std::vector<double> m_setpoints = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
     float m_xError, m_yError;
     float m_thrusterControlX, m_thrusterControlY;
     float m_thrusterControlXN, m_thrusterControlYN;
-
-    float Kpx = 0.1;
-    float Kpy = 0.5;
-    float Kix = 0.01;
-    float Kiy = 0.001;
-    float Kdx = 0.01;
-    float Kdy = 0.01;
-
 };
+
+#endif
