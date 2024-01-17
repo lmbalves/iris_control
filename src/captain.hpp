@@ -7,9 +7,9 @@ class Captain{
 public:
     Captain(ros::NodeHandle *nh)
     {
-        m_subVisualDetection = nh->subscribe("/iris/proscilica_front/ghost_detection_state",
+        m_subVisualDetection = nh->subscribe("/iris/captain/visual_detection",
                                           1000, &Captain::visualBoolCallback, this);
-        m_pubNavigationMode = nh->advertise<std_msgs::Bool>("/iris/controller/navigation_mode", 1000);
+        m_pubNavigationMode = nh->advertise<std_msgs::Bool>("/iris/captain/navigation_mode", 1000);
     }
 
     void visualBoolCallback(const std_msgs::Bool::ConstPtr &boolMsg);

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <ros/ros.h>
+#include <std_msgs/Bool.h>
 #include <std_msgs/Float32MultiArray.h>
 #include <std_msgs/Float64MultiArray.h>
 
@@ -23,10 +24,19 @@ class VisualNavigation{
 public:
     VisualNavigation(ros::NodeHandle *nh)
     {
+        m_subCaptainDecision = nh->subscribe("/iris/captain/navigation_mode",
+                                          1000, &VisualNavigation::captainCallback, this);
         m_subDetectionData = nh->subscribe("/iris/proscilica_front/ghost_detection_data",
                                           1000, &VisualNavigation::imageDataCallback, this);
         m_pubThrusters = nh->advertise<std_msgs::Float64MultiArray>("/iris/controller/thruster_setpoints", 1000);
     }
+    /**
+     * @brief Callback method that subscribes a boolean value from the Captain node.
+     * True -> Acoustic navigation interrupted, start visual navigation.
+     * False -> Stop visual, resume acoustic navigation.
+     */
+    void captainCallback(const std_msgs::Bool::ConstPtr &decisionMsg);
+
     /**
      * @brief Callback method that subscribes to a topic published in IRIS Vision - setpoints_visual_navigation.
      * Message contains a vector with the center point of the image, the center point of the highest
@@ -43,11 +53,13 @@ public:
     void thrusterControl(std::vector<float> imageData);
 
 private:
+    ros::Subscriber m_subCaptainDecision;
     ros::Subscriber m_subDetectionData;
     ros::Publisher m_pubThrusters;
     std::vector<float> m_imageData;
     std::vector<double> m_setpoints = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
+    bool m_navigation;
     float m_xError, m_yError;
     float m_thrusterControlX, m_thrusterControlY;
     float m_thrusterControlXN, m_thrusterControlYN;
