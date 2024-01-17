@@ -123,3 +123,7 @@ target_link_libraries(pilot ${catkin_LIBRARIES})
 add_executable(heading_estimation src/heading_estimation.cpp)
 add_dependencies(heading_estimation ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(heading_estimation ${catkin_LIBRARIES})
+
+add_executable(captain src/captain.cpp)
+add_dependencies(captain ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(captain ${catkin_LIBRARIES})
