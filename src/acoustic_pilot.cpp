@@ -1,6 +1,6 @@
 
 /**
- * @file range_calculator.cpp
+ * @file acoustic_pilot.cpp
  * @author Luis Alves (lmbalves@gmail.com)
  * @brief This node calculates the range and using a lyapunov approach calculates and
  *        publishes a commanded yaw
@@ -27,11 +27,12 @@
 #include <Eigen/Dense>
 #include <math.h>
 
-double speed, radius, des_yaw, des_z, roll, pitch, yaw, com_yaw, rel_heading, speed_X, speed_Y;
-double k_z = 1.1;
+double range, range_x, range_y, altitude_error, speed, radius, des_yaw, error_z, roll, pitch, yaw, com_yaw, rel_heading, speed_X, speed_Y;
+double k_z = 120;
+double k_r = 70;
 double k = 4;
-double k_yaw = 0.03;
-double alpha  = 1;
+double k_yaw = 0.3;
+double alpha  = 2;
 
 void quaternionCallback(const sensor_msgs::Imu::ConstPtr &msg)
 {
@@ -49,22 +50,17 @@ void dvl_Callback(const stonefish_ros::DVL::ConstPtr &msg)
 }
 void Callback(const visualization_msgs::MarkerArray::ConstPtr &msg)
 {
-  // size_t it;
-  // size_t size = msg->markers.begin() - msg->markers.end();
-  // for (it == 0; it != size; ++it)
-  // {
-    // speed = 1;
     radius = 5;
     visualization_msgs::Marker marker = msg->markers[0];
     ROS_INFO("X = %f", marker.pose.position.x);
     ROS_INFO("Y = %f", marker.pose.position.y);
     ROS_INFO("Z = %f", marker.pose.position.z);
-    double range = sqrt( pow( marker.pose.position.x, 2 ) + pow( marker.pose.position.y, 2 ));
+    range_x = marker.pose.position.x;
+    range_y = marker.pose.position.y;
+    range = sqrt( pow( marker.pose.position.x, 2 ) + pow( marker.pose.position.y, 2 ));
     ROS_INFO("Range = %f", range);
-    // double X_dot_d = ( speed / ( (range + 0.01) * ( pow(range,2) + pow(radius, 2) ) ) ) * ( -(marker.pose.position.x) * ( pow(range,2) - pow(radius,2) ) - ( marker.pose.position.y * (2 * range * radius) ) );
-    // double Y_dot_d = ( speed / ( (range + 0.01) * ( pow(range,2) + pow(radius, 2) ) ) ) * ( -(marker.pose.position.y) * ( pow(range,2) - pow(radius,2) ) + ( marker.pose.position.x * (2 * range * radius) ) );
-    // des_yaw = atan2(Y_dot_d, X_dot_d);
-    des_z = marker.pose.position.z;
+
+    error_z = marker.pose.position.z;
     rel_heading = (M_PI_2-atan2(marker.pose.position.y, marker.pose.position.x));
     if(rel_heading>=M_PI){ rel_heading-=2*M_PI;}
     else if(rel_heading<=M_PI){rel_heading+=2*M_PI;}
@@ -86,7 +82,7 @@ void Callback(const visualization_msgs::MarkerArray::ConstPtr &msg)
 int main(int argc, char **argv)
 {
   
-  ros::init(argc, argv, "range_calculator");
+  ros::init(argc, argv, "acoustic_pilot");
 
   ros::NodeHandle n, np, nh, nhs;
   ros::Subscriber sub_imu = nh.subscribe("/iris/navigator/imu", 1000, quaternionCallback);
@@ -97,8 +93,10 @@ int main(int argc, char **argv)
   while (ros::ok())
   {
     geometry_msgs::Twist msg;
-    msg.linear.z = -k_z * des_z;
-    msg.angular.z = -k_yaw * com_yaw;
+    msg.linear.z = k_z * error_z;
+    msg.linear.x = k_r * range_x;
+    msg.linear.y = k_r * range_y;
+    msg.angular.z = k_yaw * com_yaw;
     pub.publish(msg);
     ros::spinOnce();
 
