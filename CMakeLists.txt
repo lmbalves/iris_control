@@ -14,6 +14,8 @@ find_package(catkin REQUIRED COMPONENTS
 
   rosbridge_server
   tf
+  tf2
+  tf2_ros
   topic_tools
   rviz
   diagnostic_aggregator
@@ -101,13 +103,13 @@ add_executable(setpoints_mkII src/setpoints_mkII.cpp)
 add_dependencies(setpoints_mkII ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(setpoints_mkII ${catkin_LIBRARIES})
 
-add_executable(range_calculator src/range_calculator.cpp)
-add_dependencies(range_calculator ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(range_calculator ${catkin_LIBRARIES})
+add_executable(acoustic_pilot src/acoustic_pilot.cpp)
+add_dependencies(acoustic_pilot ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(acoustic_pilot ${catkin_LIBRARIES})
 
-add_executable(setpoints_range_pose src/setpoints_range_pose.cpp)
-add_dependencies(setpoints_range_pose ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(setpoints_range_pose ${catkin_LIBRARIES})
+add_executable(thrust_setpoints_pub src/thrust_setpoints_pub.cpp)
+add_dependencies(thrust_setpoints_pub ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(thrust_setpoints_pub ${catkin_LIBRARIES})
 
 add_executable(setpoints_visual_navigation src/setpoints_visual_navigation.cpp)
 add_dependencies(setpoints_visual_navigation ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -117,6 +119,7 @@ add_executable(pilot src/pilot.cpp)
 add_dependencies(pilot ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(pilot ${catkin_LIBRARIES})
 
-add_executable(captain src/captain.cpp)
-add_dependencies(captain ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(captain ${catkin_LIBRARIES})
+
+add_executable(heading_estimation src/heading_estimation.cpp)
+add_dependencies(heading_estimation ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(heading_estimation ${catkin_LIBRARIES})
