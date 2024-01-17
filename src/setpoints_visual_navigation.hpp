@@ -14,6 +14,11 @@ const float KDX = 0.01;
 const float KDY = 0.01;
 const float DT = 0.1;
 
+const float KP_SURGE = 0.01;
+const float KI_SURGE = 0.001;
+const float KD_SURGE = 0.001;
+
+
 class VisualNavigation{
 public:
     VisualNavigation(ros::NodeHandle *nh)

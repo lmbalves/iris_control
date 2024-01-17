@@ -6,15 +6,17 @@
 
 void VisualNavigation::imageDataCallback(const std_msgs::Float32MultiArray::ConstPtr& imageDataMsg){
     m_imageData = imageDataMsg->data;
-    std::cout << "\n--------------";    
+    std::cout << "\n--------------\n";    
     std::cout << "\nCenter frame = (" << m_imageData[0] << "," << m_imageData[1] << ")";    
     std::cout << "\nCenter box = (" << m_imageData[2] << "," << m_imageData[3] << ")";    
     std::cout << "\n--------------\n";  
     thrusterControl(m_imageData);
 }
 
-
+/* imageData = [imageCenterX, imageCenterY, boxCenterX, boxCenterY,
+                imageWidth, imageHeight, boxWidth, boxHeight] */
 void VisualNavigation::thrusterControl(std::vector<float> imageData){
+    /* YAW AND HEAVE CONTROL BASED ON CENTER POINTS*/
     /* Error in each image axis */
     m_xError = imageData[0]-imageData[2];
     m_yError = imageData[1]-imageData[3];
@@ -31,9 +33,6 @@ void VisualNavigation::thrusterControl(std::vector<float> imageData){
     m_thrusterControlXN = -(m_thrusterControlX/imageData[0]);
     m_thrusterControlYN = (m_thrusterControlY/imageData[1]);
 
-    std::cout << "\n|||||||||||||||||";
-    std::cout << "\nThruster control = (" << m_thrusterControlXN << "," << m_thrusterControlYN << ")";    
-    std::cout << "\n|||||||||||||||||";
 
     /* Heave input setpoints*/
     m_setpoints[4] = m_thrusterControlYN;
@@ -41,6 +40,28 @@ void VisualNavigation::thrusterControl(std::vector<float> imageData){
     /* Yaw input setpoints */
     m_setpoints[6] = m_thrusterControlXN;
     m_setpoints[7] = m_thrusterControlXN;
+
+    /* SURGE CONTROL BASED ON BOX SIZE */
+    float frameSize = imageData[4]+imageData[5];
+    float boxSize = imageData[6]+imageData[7];
+
+    float errorSize = frameSize - boxSize;
+    float surgeIntegral = errorSize*DT;
+
+    float surgeInput = KPY*errorSize + KIY*surgeIntegral;
+
+    float surgeNormalized = surgeInput/frameSize;
+
+    m_setpoints[0] = surgeNormalized;
+    m_setpoints[1] = surgeNormalized;
+    m_setpoints[2] = surgeNormalized;
+    m_setpoints[3] = surgeNormalized;
+
+    std::cout << "\n|||||||||||||||||";
+    std::cout << "\nSurge = " << surgeNormalized;    
+    std::cout << "\nHeave = " << m_thrusterControlYN;    
+    std::cout << "\nYaw = " << m_thrusterControlXN;    
+    std::cout << "\n|||||||||||||||||";
 
     std_msgs::Float64MultiArray msgSetpoints;
     msgSetpoints.data = m_setpoints;
