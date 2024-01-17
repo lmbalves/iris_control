@@ -32,12 +32,6 @@ find_package(catkin REQUIRED COMPONENTS
   diagnostic_msgs
   actionlib
   stonefish_ros
-  #dynamic_reconfigure
-
-  # COLA2 Dependencies
-  
-  #cola2_lib_ros
-  # cola2_msgs
   message_generation
 )
 
@@ -116,6 +110,10 @@ target_link_libraries(acoustic_pilot ${catkin_LIBRARIES})
 add_executable(thrust_setpoints_pub src/thrust_setpoints_pub.cpp)
 add_dependencies(thrust_setpoints_pub ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(thrust_setpoints_pub ${catkin_LIBRARIES})
+
+add_executable(setpoints_visual_navigation src/setpoints_visual_navigation.cpp)
+add_dependencies(setpoints_visual_navigation ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(setpoints_visual_navigation ${catkin_LIBRARIES})
 
 add_executable(pilot src/pilot.cpp)
 add_dependencies(pilot ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
