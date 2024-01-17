@@ -116,3 +116,7 @@ target_link_libraries(setpoints_visual_navigation ${catkin_LIBRARIES})
 add_executable(pilot src/pilot.cpp)
 add_dependencies(pilot ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(pilot ${catkin_LIBRARIES})
+
+add_executable(captain src/captain.cpp)
+add_dependencies(captain ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(captain ${catkin_LIBRARIES})
