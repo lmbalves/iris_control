@@ -118,8 +118,3 @@ target_link_libraries(setpoints_visual_navigation ${catkin_LIBRARIES})
 add_executable(pilot src/pilot.cpp)
 add_dependencies(pilot ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(pilot ${catkin_LIBRARIES})
-
-
-add_executable(heading_estimation src/heading_estimation.cpp)
-add_dependencies(heading_estimation ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(heading_estimation ${catkin_LIBRARIES})
