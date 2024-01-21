@@ -10,6 +10,7 @@ Files/Nodes
  - acoustic_pilot.cpp - given the tag localization (heading estimation node TODO) will publish commands for speed and yaw through std_msgs::Twist following both a circular and a descendig path towards the tag and circle round the tag to a defined radius
  - setpoints_visual_navigation.cpp - using trained model will detect and approach fishing apparell lost in the sea
  - thrust_setpoints_pub.cpp - subscribes std_msgs::Twist messages and publishes setpoints to the thrusters
+ - plot_path.py - use this plotter to graph realtime the path followed by the IRIS
 
 TODO
 
