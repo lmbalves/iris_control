@@ -47,8 +47,5 @@
   <depend>actionlib</depend>
   <depend>dynamic_reconfigure</depend>
   <depend>stonefish_ros</depend>
-  <!-- COLA2 Dependencies -->
-  <!-- <depend>cola2_lib_ros</depend>
-  <depend>cola2_msgs</depend> -->
   <depend>iris_description</depend>
 </package>

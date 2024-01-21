@@ -40,9 +40,6 @@ find_package(catkin REQUIRED COMPONENTS
 
 # System Dependencies
 find_package(Boost REQUIRED)
-#find_package(COLA2_LIB REQUIRED)
-
-
 
 # Declare things to be passed to dependent projects
 catkin_package(
@@ -55,8 +52,6 @@ catkin_package(
                  sensor_msgs
                  actionlib
                  stonefish_ros
-                #  cola2_lib_ros
-                #  cola2_msgs
   DEPENDS Boost
 
 )
@@ -65,25 +60,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-#install(PROGRAMS
-#  /src/path_motor_control2.py
-#  DESTINATION lib/${iris_control}
-#)
 catkin_python_setup()
-
-catkin_install_python(PROGRAMS  
-  src/path_motor_control2.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
-catkin_install_python(PROGRAMS  
-  src/control_vision.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
-
-catkin_install_python(PROGRAMS  
-  src/control_rotors.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
 
 catkin_install_python(PROGRAMS  
   src/plot_path.py
@@ -94,10 +71,6 @@ catkin_install_python(PROGRAMS
 add_executable(setpoints_pub_node2 src/setpoints_pub_iris2.cpp)  
 add_dependencies(setpoints_pub_node2 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(setpoints_pub_node2 ${catkin_LIBRARIES})
-
-add_executable(setpoints_pub_node src/setpoints_pub_iris.cpp)
-add_dependencies(setpoints_pub_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(setpoints_pub_node ${catkin_LIBRARIES}) 
 
 add_executable(setpoints_mkII src/setpoints_mkII.cpp)
 add_dependencies(setpoints_mkII ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -114,7 +87,3 @@ target_link_libraries(thrust_setpoints_pub ${catkin_LIBRARIES})
 add_executable(setpoints_visual_navigation src/setpoints_visual_navigation.cpp)
 add_dependencies(setpoints_visual_navigation ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(setpoints_visual_navigation ${catkin_LIBRARIES})
-
-add_executable(pilot src/pilot.cpp)
-add_dependencies(pilot ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(pilot ${catkin_LIBRARIES})
