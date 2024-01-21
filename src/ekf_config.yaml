@@ -1,0 +1,5 @@
+ekf_sequential:
+  sensor_timeout: 0.1
+
+  imu0: /iris/navigator/imu
+  odom0: /iris/dynamics/odometry
