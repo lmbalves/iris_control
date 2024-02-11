@@ -28,10 +28,12 @@ void VisualNavigation::thrusterControl(std::vector<float> imageData){
     float frameSize = imageData[4]+imageData[5];
     float boxSize = imageData[6]+imageData[7];
 
-    float errorSize = frameSize - boxSize;
+    float errorSize = frameSize - boxSize*(3/5);
     float surgeIntegral = errorSize*DT;
+    float surgeDerivative = (errorSize - m_lastErrorSurge)*DT;
+    m_lastErrorSurge = errorSize;
+    float surgeInput = KP_SURGE*errorSize + KI_SURGE*surgeIntegral + KD_SURGE*surgeDerivative;
 
-    float surgeInput = KPY*errorSize + KIY*surgeIntegral;
 
     float surgeNormalized = surgeInput/frameSize;
 
@@ -52,35 +54,35 @@ void VisualNavigation::thrusterControl(std::vector<float> imageData){
     m_thrusterControlXN = -(m_thrusterControlX/imageData[0]);
     m_thrusterControlYN = (m_thrusterControlY/imageData[1]);
 
-    if (m_navigation == true){
-        /* Surge input setpoints*/
-        // m_setpoints[0] = surgeNormalized;
-        // m_setpoints[1] = surgeNormalized;
-        // m_setpoints[2] = surgeNormalized;
-        // m_setpoints[3] = surgeNormalized;
-        /* Heave input setpoints*/
-        m_setpoints[4] = m_thrusterControlYN;
-        m_setpoints[5] = m_thrusterControlYN;
-        /* Yaw input setpoints */
-        m_setpoints[6] = m_thrusterControlXN;
-        m_setpoints[7] = m_thrusterControlXN;
 
-        std::cout << "\n|||||||||||||||||";
-        std::cout << "\nSurge = " << surgeNormalized;    
-        std::cout << "\nHeave = " << m_thrusterControlYN;    
-        std::cout << "\nYaw = " << m_thrusterControlXN;    
-        std::cout << "\n|||||||||||||||||";
+    /* Surge input setpoints*/
+    m_setpoints[0] = surgeNormalized;
+    m_setpoints[1] = surgeNormalized;
+    m_setpoints[2] = surgeNormalized;
+    m_setpoints[3] = surgeNormalized;
+    /* Heave input setpoints*/
+    m_setpoints[4] = m_thrusterControlYN;
+    m_setpoints[5] = m_thrusterControlYN;
+    /* Yaw input setpoints */
+    m_setpoints[6] = m_thrusterControlXN;
+    m_setpoints[7] = m_thrusterControlXN;
 
-        msgSetpoints.data = m_setpoints;
-        m_pubThrusters.publish(msgSetpoints);
-    }
+    std::cout << "\n|||||||||||||||||";
+    std::cout << "\nSurge = " << surgeNormalized;    
+    std::cout << "\nhVisualeave = " << m_thrusterControlYN;    
+    std::cout << "\nYaw = " << m_thrusterControlXN;    
+    std::cout << "\n|||||||||||||||||";
+
+    msgSetpoints.data = m_setpoints;
+
+    m_pubThrusters.publish(msgSetpoints);
 }
 
 
 int main (int argc, char **argv){
     ros::init(argc, argv, "setpoints_visual_navigation");
     
-    ros::NodeHandle nh;
-    VisualNavigation irisVisualControl = VisualNavigation(&nh);
+    ros::NodeHandle nhVisual;
+    VisualNavigation irisVisualControl = VisualNavigation(&nhVisual);
     ros::spin();
 }
