@@ -6,26 +6,26 @@
 #ifndef SETPOINTS_VISUAL_NAVIGATION
 #define SETPOINTS_VISUAL_NAVIGATION
 
-const float KPX = 0.1;
-const float KPY = 0.5;
+const float KPX = 0.2;
+const float KPY = 0.6;
 const float KIX = 0.01;
-const float KIY = 0.001;
+const float KIY = 0.01;
 const float KDX = 0.01;
 const float KDY = 0.01;
 const float DT = 0.1;
 
-const float KP_SURGE = 0.01;
-const float KI_SURGE = 0.001;
-const float KD_SURGE = 0.001;
+const float KP_SURGE = 0.21;
+const float KI_SURGE = 0.01;
+const float KD_SURGE = 0.01;
 
 
 class VisualNavigation{
 public:
-    VisualNavigation(ros::NodeHandle *nh)
+    VisualNavigation(ros::NodeHandle *nhVisual)
     {
-        m_subDetectionData = nh->subscribe("/iris/proscilica_front/ghost_detection_data",
+        m_subDetectionData = nhVisual->subscribe("/iris/proscilica_front/ghost_detection_data",
                                           1000, &VisualNavigation::imageDataCallback, this);
-        m_pubThrusters = nh->advertise<std_msgs::Float64MultiArray>("/iris/controller/thruster_setpoints", 1000);
+        m_pubThrusters = nhVisual->advertise<std_msgs::Float64MultiArray>("/iris/controller/thruster_setpoints", 1000);
     }
     /**
      * @brief Callback method that subscribes to a topic published in IRIS Vision - setpoints_visual_navigation.
@@ -49,6 +49,7 @@ private:
     std::vector<double> m_setpoints = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
     float m_xError, m_yError;
+    float m_lastErrorSurge;
     float m_thrusterControlX, m_thrusterControlY;
     float m_thrusterControlXN, m_thrusterControlYN;
 };
