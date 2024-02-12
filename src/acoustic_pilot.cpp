@@ -1,10 +1,9 @@
-
 /**
  * @file acoustic_pilot.cpp
  * @author Luis Alves (lmbalves@gmail.com)
  * @brief This node calculates the range and using a lyapunov approach calculates and
  *        publishes a commanded yaw
- * @version 0.1
+ * @version 0.2
  * @date 2021-10-04
  * 
  * 
@@ -28,10 +27,10 @@
 #include <math.h>
 
 double range, range_x, range_y, altitude_error, speed, radius, des_yaw, error_z, roll, pitch, yaw, com_yaw, rel_heading, speed_X, speed_Y;
-double k_z = 120;
-double k_r = 70;
-double k = 4;
-double k_yaw = 0.3;
+double k_z = 50;
+double k_r = 50;
+double k = 3;
+double k_yaw = 0.33;
 double alpha  = 2;
 
 void quaternionCallback(const sensor_msgs::Imu::ConstPtr &msg)
@@ -50,22 +49,25 @@ void dvl_Callback(const stonefish_ros::DVL::ConstPtr &msg)
 }
 void Callback(const visualization_msgs::MarkerArray::ConstPtr &msg)
 {
-    radius = 5;
+    radius = 3;
     visualization_msgs::Marker marker = msg->markers[0];
     ROS_INFO("X = %f", marker.pose.position.x);
     ROS_INFO("Y = %f", marker.pose.position.y);
     ROS_INFO("Z = %f", marker.pose.position.z);
     range_x = marker.pose.position.x;
     range_y = marker.pose.position.y;
+
     range = sqrt( pow( marker.pose.position.x, 2 ) + pow( marker.pose.position.y, 2 ));
     ROS_INFO("Range = %f", range);
 
     error_z = marker.pose.position.z;
-    rel_heading = (M_PI_2-atan2(marker.pose.position.y, marker.pose.position.x));
+    ROS_INFO("Range = %f", range);
+
+    rel_heading = (M_PI_2-atan2(marker.pose.position.y, marker.pose.position.x)); //not needed when we have estimated heading
     if(rel_heading>=M_PI){ rel_heading-=2*M_PI;}
     else if(rel_heading<=M_PI){rel_heading+=2*M_PI;}
     ROS_INFO("Relative heading = %f", rel_heading);
-    if (range > (1.1 * radius))
+    if (range > (1.01 * radius))
     {
       com_yaw =  rel_heading - ((5 * M_PI) / 6) + (( speed / range ) * sin(yaw - rel_heading)); 
     }
@@ -73,7 +75,6 @@ void Callback(const visualization_msgs::MarkerArray::ConstPtr &msg)
     {
       des_yaw = rel_heading - M_PI_2 - (M_PI / 3) * pow((range - radius ) / radius, k);
       com_yaw = des_yaw  - ( speed / (alpha * range) ) * sin(yaw - rel_heading) - ((k * speed*M_PI) / (3 * pow(radius,k) * alpha )) * pow(range, k -1) * cos(yaw - rel_heading);
-      com_yaw = com_yaw + M_PI_2;
     }
     ROS_INFO("com_yaw = %f", com_yaw);
     ROS_INFO("roll: %f pitch: %f yaw: %f", roll, pitch, yaw);
