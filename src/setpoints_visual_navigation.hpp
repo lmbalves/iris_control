@@ -6,15 +6,15 @@
 #ifndef SETPOINTS_VISUAL_NAVIGATION
 #define SETPOINTS_VISUAL_NAVIGATION
 
-const float KPX = 0.2;
-const float KPY = 0.6;
+const float KPX = 0.9;
+const float KPY = 1.325;
 const float KIX = 0.01;
-const float KIY = 0.01;
+const float KIY = 0.001;
 const float KDX = 0.01;
 const float KDY = 0.01;
 const float DT = 0.1;
 
-const float KP_SURGE = 0.21;
+const float KP_SURGE = 1;
 const float KI_SURGE = 0.01;
 const float KD_SURGE = 0.01;
 
