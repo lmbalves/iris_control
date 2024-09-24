@@ -13,24 +13,23 @@ void VisualNavigation::imageDataCallback(const std_msgs::Float32MultiArray::Cons
     thrusterControl(m_imageData);
 }
 
-/* imageData = [imageCenterX, imageCenterY, boxCenterX, boxCenterY,
-                imageWidth, imageHeight, boxWidth, boxHeight] */
 void VisualNavigation::thrusterControl(std::vector<float> imageData){
     std_msgs::Float64MultiArray msgSetpoints;
     /* SURGE CONTROL BASED ON BOX SIZE */
     float frameSize = imageData[4]+imageData[5];
     float boxSize = imageData[6]+imageData[7];
 
-    float errorSize = frameSize - boxSize*(3/5);
+    float errorSize = frameSize*(3.0/5.0) - boxSize;
     float surgeIntegral = errorSize*DT;
-    float surgeDerivative = (errorSize - m_lastErrorSurge)*DT;
+
+    float surgeDerivative = (errorSize - m_lastErrorSurge)/DT;
     m_lastErrorSurge = errorSize;
     float surgeInput = KP_SURGE*errorSize + KI_SURGE*surgeIntegral + KD_SURGE*surgeDerivative;
 
     float surgeNormalized = surgeInput/frameSize;
 
     /* YAW AND HEAVE CONTROL BASED ON CENTER POINTS*/
-    /* Error in each image axis */
+    /* Error in each image axis between frame and box coordinate */
     m_xError = imageData[0]-imageData[2];
     m_yError = imageData[1]-imageData[3];
 
@@ -39,12 +38,12 @@ void VisualNavigation::thrusterControl(std::vector<float> imageData){
     float yIntegral = m_yError*DT;
 
     /* thruster input values = constant*error */
-    m_thrusterControlX = KPX*m_xError + KIX*xIntegral;
-    m_thrusterControlY = KPY*m_yError + KIY*yIntegral;
+    m_thrusterControlX = KPX*m_xError + KIX*xIntegral; // Yaw control
+    m_thrusterControlY = KPY*m_yError + KIY*yIntegral; // Heave control
 
     /* Normalize thruster input values*/
-    m_thrusterControlXN = -(m_thrusterControlX/imageData[0]);
-    m_thrusterControlYN = (m_thrusterControlY/imageData[1]);
+    m_thrusterControlXN = -(m_thrusterControlX/imageData[0]); // Yaw normalized
+    m_thrusterControlYN = (m_thrusterControlY/imageData[1]); // Heave normalized
 
     /* Surge input setpoints*/
     m_setpoints[0] = surgeNormalized;
