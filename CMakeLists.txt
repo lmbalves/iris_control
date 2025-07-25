@@ -1,89 +1,68 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.8)
 project(iris_control)
 
-## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++11)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-  # ROS Dependencies
-  cv_bridge
-  image_transport
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(visualization_msgs REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(stonefish_ros2 REQUIRED)
 
-  rosbridge_server
-  tf
-  tf2
-  tf2_ros
-  topic_tools
-  rviz
-  diagnostic_aggregator
-  cmake_modules
-  roscpp
-  rosparam
-  rospy
-  roslib
+# Find Eigen3
+find_package(Eigen3 REQUIRED)
+
+include_directories(include)
+
+# Acoustic pilot node
+add_executable(acoustic_pilot
+  src/acoustic_pilot.cpp
+)
+ament_target_dependencies(acoustic_pilot
+  rclcpp
   std_msgs
-  std_srvs
-  sensor_msgs
   geometry_msgs
+  nav_msgs
+  tf2_ros
+  tf2_geometry_msgs
+  sensor_msgs
   visualization_msgs
-  diagnostic_msgs
-  actionlib
-  stonefish_ros
-  message_generation
+  tf2
+  stonefish_ros2
+)
+target_include_directories(acoustic_pilot PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+  ${EIGEN3_INCLUDE_DIR}
 )
 
-
-#ament_python_install_package(${PROJECT_NAME})
-
-# System Dependencies
-find_package(Boost REQUIRED)
-
-# Declare things to be passed to dependent projects
-catkin_package(
-  INCLUDE_DIRS
-  LIBRARIES 
-  # TODO: go and check what is in the headers
-  CATKIN_DEPENDS roscpp
-                 roslib
-                 std_msgs
-                 sensor_msgs
-                 actionlib
-                 stonefish_ros
-  DEPENDS Boost
-
+# Thrust setpoints publisher node
+add_executable(thrust_setpoints_pub
+  src/thrust_setpoints_pub.cpp
 )
-include_directories(
-  include
-  ${catkin_INCLUDE_DIRS}
+ament_target_dependencies(thrust_setpoints_pub
+  rclcpp
+  std_msgs
+  geometry_msgs
 )
 
-catkin_python_setup()
-
-catkin_install_python(PROGRAMS  
-  src/plot_path.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+install(TARGETS
+  acoustic_pilot
+  thrust_setpoints_pub
+  DESTINATION lib/${PROJECT_NAME}
 )
 
-#adicionei estes 3 para testar um codigo diferente
-add_executable(setpoints_pub_node2 src/setpoints_pub_iris2.cpp)  
-add_dependencies(setpoints_pub_node2 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(setpoints_pub_node2 ${catkin_LIBRARIES})
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}
+)
 
-add_executable(setpoints_mkII src/setpoints_mkII.cpp)
-add_dependencies(setpoints_mkII ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(setpoints_mkII ${catkin_LIBRARIES})
-
-add_executable(acoustic_pilot src/acoustic_pilot.cpp)
-add_dependencies(acoustic_pilot ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(acoustic_pilot ${catkin_LIBRARIES})
-
-add_executable(thrust_setpoints_pub src/thrust_setpoints_pub.cpp)
-add_dependencies(thrust_setpoints_pub ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(thrust_setpoints_pub ${catkin_LIBRARIES})
-
-add_executable(setpoints_visual_navigation src/setpoints_visual_navigation.cpp)
-add_dependencies(setpoints_visual_navigation ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(setpoints_visual_navigation ${catkin_LIBRARIES})
+ament_package()
