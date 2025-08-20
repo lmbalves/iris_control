@@ -81,18 +81,14 @@ private:
 
         // Apply descent speed
         thrust_[4] = -descent_cmd-thrust_buoyancy_offset;
-        thrust_[5] = -descent_cmd-thrust_buoyancy_offset;  
-        thrust_[6] = 0;
-        thrust_[7] = 0;
-
         if (std::abs(thrust_[4]) > 50.0)
         {
-            for (size_t i = 4; i < 6; i++)
-            {
-                thrust_[i] = (50.0/(std::abs(thrust_[4])))*thrust_[i];
-            }
+            thrust_[4] = (50.0/(std::abs(thrust_[4])))*thrust_[4];
         }
+        thrust_[5] = thrust_[4];
 
+        thrust_[6] = 0;
+        thrust_[7] = 0;
         RCLCPP_INFO(this->get_logger(), "thrust: %f,%f,%f,%f,%f,%f,%f,%f", 
             thrust_[0], thrust_[1], thrust_[2], thrust_[3],
             thrust_[4], thrust_[5], thrust_[6], thrust_[7]);

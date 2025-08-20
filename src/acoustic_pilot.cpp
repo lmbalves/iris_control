@@ -49,9 +49,10 @@ public:
             std::bind(&AcousticPilot::controlLoop, this));
 
         // Initialize parameters
-        k_z = 50.0;
-        k_r = 50.0;
-        k = 3.0;
+        k_z = 0.95;
+        ki_z = 0.01;
+        k_r = 1.0;
+        k = 1.0;
         k_yaw = 0.33;
         alpha = 2.0;
     }
@@ -105,8 +106,9 @@ private:
 
     void controlLoop()
     {
+        float integral_z = error_z * 0.1;
         auto msg = geometry_msgs::msg::Twist();
-        msg.linear.z = k_z * error_z;
+        msg.linear.z = k_z * error_z + ki_z * integral_z;
         msg.linear.x = k_r * range_x;
         msg.linear.y = k_r * range_y;
         msg.angular.z = k_yaw * com_yaw;
@@ -123,12 +125,11 @@ private:
 
     // Timer
     rclcpp::TimerBase::SharedPtr timer_;
-
     // Variables
     double range, range_x, range_y, altitude_error, speed, radius;
     double des_yaw, error_z, roll, pitch, yaw, com_yaw, rel_heading;
     double speed_X, speed_Y;
-    double k_z, k_r, k, k_yaw, alpha;
+    double k_z, k_r, k, k_yaw, alpha, ki_z;
 };
 
 int main(int argc, char** argv)
