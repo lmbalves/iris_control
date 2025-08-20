@@ -20,6 +20,9 @@
   <depend>tf2</depend>
   <depend>eigen</depend>
   <depend>stonefish_ros2</depend>
+  <depend>rclpy</depend>
+  <depend>python3-matplotlib</depend>
+  <depend>numpy</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

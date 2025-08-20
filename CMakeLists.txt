@@ -65,4 +65,10 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}
 )
 
+# Add Python installation
+install(PROGRAMS
+  scripts/plot_path.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 ament_package()
