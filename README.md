@@ -2,7 +2,9 @@ IRIS AUV NETTAG Acousitc and Vision control stack for use in Stonefish
 
 To use this control pipeline first follow all instructions on https://github.com/lmbalves/iris_stonefish/blob/master/README.md
 
-After you have averything runnig go ahead and clone this repo to your catkin workspace and build
+After you have everything running, clone this repo into the same ROS 2 (Jazzy) workspace and build with `colcon build`.
+
+Run nodes with e.g. `ros2 run iris_control thrust_setpoints_pub` and `ros2 run iris_control acoustic_pilot`, or `ros2 launch iris_control iris_control.launch.py`.
 
 Files/Nodes
 
@@ -16,4 +18,4 @@ TODO
 
  - A heading estimation node that using the know waypoints triangulates to understand the localization of the tag
 
- - A captain node that will cycle trough running modes, first it will circle util it finds the x,y realtive location the it will descend to understand z realtive location, heading estimation will then be able to publish a location, then it kicks the coarse approach and finaly it will use the visual navigation to detect and make the final approach to the net.
+ - A captain node that will cycle trough running modes, first it will circle util it finds the x,y realtive location the it will descend to understand z realtive location, heading estimation will then be able to publish a location, then it kicks the coarse approach and finaly it will use the visual navigation to detect and make the final approach to the net.
