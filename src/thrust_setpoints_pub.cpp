@@ -53,10 +53,12 @@ private:
 
     void controlLoop()
     {
-        float accel = 4.0;
-        lat_cmd = accel * lat_cmd;
-        fwd_cmd = accel * fwd_cmd;
-        total_thrust = sqrt(pow(fwd_cmd,2)+pow(lat_cmd,2));
+        // Scale local copies only: the members hold the last received command
+        // and scaling them in place would compound on every tick.
+        const double accel = 4.0;
+        const double fwd = accel * fwd_cmd;
+        const double lat = accel * lat_cmd;
+        total_thrust = sqrt(pow(fwd,2)+pow(lat,2));
         //saturate to total thrust available
         if (total_thrust >= 200.0) total_thrust = 200.0;
         if (total_thrust <= -200.0) total_thrust = -200.0;
@@ -86,7 +88,7 @@ private:
         thrust_[4] = -descent_cmd-thrust_buoyancy_offset;
         if (std::abs(thrust_[4]) > 50.0)
         {
-            thrust_[4] = accel * (50.0/(std::abs(thrust_[4])))*thrust_[4];
+            thrust_[4] = (50.0/(std::abs(thrust_[4])))*thrust_[4];
         }
         thrust_[5] = thrust_[4];
 
