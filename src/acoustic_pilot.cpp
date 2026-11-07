@@ -50,11 +50,11 @@ public:
 
         // Initialize parameters
         k_z = 0.95;
-        ki_z = 0.01;
-        k_r = 1.0;
+        ki_z = 0.001;
+        k_r = 1.5;
         k = 1.0;
-        k_yaw = 0.33;
-        alpha = 2.0;
+        k_yaw = 0.43;
+        alpha = 0.1;
     }
 
 private:
