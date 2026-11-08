@@ -53,6 +53,9 @@ target_link_libraries(thrust_setpoints_pub
   ${std_msgs_TARGETS}
   ${geometry_msgs_TARGETS}
 )
+target_include_directories(thrust_setpoints_pub PUBLIC
+  ${EIGEN3_INCLUDE_DIR}
+)
 
 install(TARGETS
   acoustic_pilot
