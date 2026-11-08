@@ -26,17 +26,17 @@ include_directories(include)
 add_executable(acoustic_pilot
   src/acoustic_pilot.cpp
 )
-ament_target_dependencies(acoustic_pilot
-  rclcpp
-  std_msgs
-  geometry_msgs
-  nav_msgs
-  tf2_ros
-  tf2_geometry_msgs
-  sensor_msgs
-  visualization_msgs
-  tf2
-  stonefish_ros2
+target_link_libraries(acoustic_pilot
+  rclcpp::rclcpp
+  ${std_msgs_TARGETS}
+  ${geometry_msgs_TARGETS}
+  ${nav_msgs_TARGETS}
+  tf2_ros::tf2_ros
+  tf2_geometry_msgs::tf2_geometry_msgs
+  ${sensor_msgs_TARGETS}
+  ${visualization_msgs_TARGETS}
+  tf2::tf2
+  ${stonefish_ros2_TARGETS}
 )
 target_include_directories(acoustic_pilot PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -48,10 +48,10 @@ target_include_directories(acoustic_pilot PUBLIC
 add_executable(thrust_setpoints_pub
   src/thrust_setpoints_pub.cpp
 )
-ament_target_dependencies(thrust_setpoints_pub
-  rclcpp
-  std_msgs
-  geometry_msgs
+target_link_libraries(thrust_setpoints_pub
+  rclcpp::rclcpp
+  ${std_msgs_TARGETS}
+  ${geometry_msgs_TARGETS}
 )
 
 install(TARGETS
