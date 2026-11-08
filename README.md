@@ -2,7 +2,7 @@ IRIS AUV NETTAG Acousitc and Vision control stack for use in Stonefish
 
 To use this control pipeline first follow all instructions on https://github.com/lmbalves/iris_stonefish/blob/master/README.md
 
-After you have everything running, clone this repo into the same ROS 2 (Jazzy) workspace and build with `colcon build`.
+After you have everything running, clone this repo into the same ROS 2 (Lyrical) workspace and build with `colcon build`.
 
 Run nodes with e.g. `ros2 run iris_control thrust_setpoints_pub` and `ros2 run iris_control acoustic_pilot`, or `ros2 launch iris_control iris_control.launch.py`.
 
