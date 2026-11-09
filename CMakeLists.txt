@@ -44,6 +44,42 @@ target_include_directories(acoustic_pilot PUBLIC
   ${EIGEN3_INCLUDE_DIR}
 )
 
+# Range-only tag estimator node
+add_executable(tag_range_estimator
+  src/tag_range_estimator.cpp
+)
+target_link_libraries(tag_range_estimator
+  rclcpp::rclcpp
+  ${std_msgs_TARGETS}
+  ${geometry_msgs_TARGETS}
+  ${sensor_msgs_TARGETS}
+  ${visualization_msgs_TARGETS}
+  tf2::tf2
+  ${stonefish_ros2_TARGETS}
+)
+target_include_directories(tag_range_estimator PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+  ${EIGEN3_INCLUDE_DIR}
+)
+
+# Acoustic pilot driven by the estimator
+add_executable(estimated_acoustic_pilot
+  src/estimated_acoustic_pilot.cpp
+)
+target_link_libraries(estimated_acoustic_pilot
+  rclcpp::rclcpp
+  ${std_msgs_TARGETS}
+  ${geometry_msgs_TARGETS}
+  ${sensor_msgs_TARGETS}
+  tf2::tf2
+  ${stonefish_ros2_TARGETS}
+)
+target_include_directories(estimated_acoustic_pilot PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
 # Thrust setpoints publisher node
 add_executable(thrust_setpoints_pub
   src/thrust_setpoints_pub.cpp
@@ -59,6 +95,8 @@ target_include_directories(thrust_setpoints_pub PUBLIC
 
 install(TARGETS
   acoustic_pilot
+  tag_range_estimator
+  estimated_acoustic_pilot
   thrust_setpoints_pub
   DESTINATION lib/${PROJECT_NAME}
 )
